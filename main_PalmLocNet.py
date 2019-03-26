@@ -5,6 +5,13 @@ import torch.utils.data as data
 import os
 from tensorboardX import SummaryWriter
 
+#为处理数据引入的模块
+from torchvision import transforms
+from torch.utils.data import Dataset, DataLoader
+from PIL import Image
+
+######pic_size = 64
+
 #设置超参数
 parser = argparse.ArgumentParser(description='super params')
 parser.add_argument('-e','--EPOCH', type=int, default=10, metavar='N',
@@ -15,6 +22,7 @@ parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
 parser.add_argument('-m','--MODELFOLDER',type= str, default='./model/',
                 help="folder to store model")
+# 有点小问题，要保证和实际的数据集的路径保持一致，不够智能
 parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./picture/',
                 help="folder to store trained picture")
 
@@ -34,9 +42,59 @@ use_gpu = torch.cuda.is_available()
 print('use GPU:',use_gpu)
 
 #数据预处理
-class MytrainData(data.Dataset):
-    pass
-    pic_size = 64
+pass
+
+
+#将数据导入到pytorch的dataloader中，以便进行批训练、打乱顺序等动作
+def default_loader(path):
+    return Image.open(path).convert('RGB')
+
+class MyDataset(Dataset):
+    def __init__(self, txt, transform=None, target_transform=None, loader=default_loader):
+        fh = open(txt, 'r')
+        imgs = []
+        for line in fh:
+            line = line.strip('\n')
+            line = line.rstrip()
+            words = line.split()
+            imgs.append((words[0], words[1]))
+        self.imgs = imgs
+        self.transform = transform
+        self.target_transform = target_transform
+        self.loader = loader
+
+    def __getitem__(self, index):
+        fn, label = self.imgs[index]
+        img = self.loader(fn)
+        if self.transform is not None:
+            img = self.transform(img)
+        return img, label
+
+    def __len__(self):
+        return len(self.imgs)
+
+train_data = MyDataset(txt=args.PICTUREFOLDER+'train.txt', transform=transforms.ToTensor())
+test_data = MyDataset(txt=args.PICTUREFOLDER+'test.txt', transform=transforms.ToTensor())
+train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
+#test_loader = DataLoader(dataset=test_data, batch_size=args.BATCH_SIZE)
+
+# test_x =
+# test_y =
+#
+# for (tx, ty) in enumerate(test_loader):
+#     if use_gpu:
+#         test_x = tx.cuda()
+#         test_y = ty.cuda()
+#     else:
+#         test_x = tx
+#         test_y = ty
+测试数据
+if use_gpu:
+    test_x = torch.unsqueeze(test_data.test_data, dim=1).type(torch.FloatTensor)[:1].cuda()/255.
+    test_y = test_data.test_labels[:1].cuda()
+else:
+    test_x = torch.unsqueeze(test_data.test_data, dim=1).type(torch.FloatTensor)[:1]/255.
+    test_y = test_data.test_labels[:1]
 
 #神经网络建模
 class PalmLocNet(nn.Module):
@@ -53,9 +111,9 @@ class PalmLocNet(nn.Module):
             nn.MaxPool2d(kernel_size=2)
         )
         self.outlinear = nn.Sequential(
-            nn.Linear(32 * 16 * 16, 100),
+            nn.Linear(32 * 16 * 16, 128),
             nn.ReLU(),
-            nn.Linear(100, 4)
+            nn.Linear(128, 4)
         )
 
     def forward(self, x):
@@ -119,7 +177,7 @@ class Myloss(nn.Module):
 
 
 #训练以及保存模型数据
-def train_PalmLocNet():
+def train_PalmLocNet(train_loader, test_x, test_y):
     if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
         print('reload the last best model parameters')
         if use_gpu:
@@ -246,7 +304,7 @@ def test_PalmLocNet(test_x, test_y):
 
 #运行训练以及测试模型
 if (__name__ == '__main__') and args.TrainOrNot:
-    train_PalmLocNet()
+    train_PalmLocNet(train_loader, test_x, test_y)
 
 if (__name__ == '__main__') and (not args.TrainOrNot):
     test_PalmLocNet(test_x, test_y)
