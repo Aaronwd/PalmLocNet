@@ -57,7 +57,7 @@ class MyDataset(Dataset):
             line = line.strip('\n')
             line = line.rstrip()
             words = line.split()
-            imgs.append((words[0], words[1]))
+            imgs.append((words[0], [float(words[1]),float(words[2]),float(words[3]),float(words[4])]))
         self.imgs = imgs
         self.transform = transform
         self.target_transform = target_transform
@@ -73,8 +73,8 @@ class MyDataset(Dataset):
     def __len__(self):
         return len(self.imgs)
 
-train_data = MyDataset(txt=args.PICTUREFOLDER+'train.txt', transform=transforms.ToTensor())
-test_data = MyDataset(txt=args.PICTUREFOLDER+'test.txt', transform=transforms.ToTensor())
+train_data = MyDataset(txt=args.PICTUREFOLDER+'trainset/'+'train.txt', transform=transforms.ToTensor())
+test_data = MyDataset(txt=args.PICTUREFOLDER+'testset/'+'test.txt', transform=transforms.ToTensor())
 train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
 #test_loader = DataLoader(dataset=test_data, batch_size=args.BATCH_SIZE)
 
