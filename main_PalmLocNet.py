@@ -254,54 +254,54 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             else:
                 print('no better in this epoch', epoch)
 
-        # 保存测试loss最小的模型参数（按周期记步）
-        if epoch == 0:
-            if os.path.exists(args.MODELFOLDER + 'test_params_best.pth'):
-                pass
-            else:
-                torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
-            if use_gpu:
-                PLNet0 = PalmLocNet()
-                PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
-                PLNet0 = PLNet0.cuda()
-            else:
-                PLNet0 = PalmLocNet()
-                PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
-
-            test_output_Plnet0 = PLNet0(test_x)
-            test_loss_func_Plnet0 = Myloss()
-            test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
-            test_compare_loss[0] = test_loss_Plnet0
-        else:
-            torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_epoch.pth')
-            if use_gpu:
-                PLNet0 = PalmLocNet()
-                PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
-                PLNet0 = PLNet0.cuda()
-            else:
-                PLNet0 = PalmLocNet()
-                PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
-
-            test_output_Plnet0 = PLNet0(test_x)
-            test_loss_func_Plnet0 = Myloss()
-            test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
-            test_compare_loss.append(test_loss_Plnet0)
-
-            if test_compare_loss[epoch]<test_compare_loss[epoch-1]:
-                torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
-                print('save the best test model in epoch', epoch)
-            else:
-                print('no better test in this epoch', epoch)
+        # # 保存测试loss最小的模型参数（按周期记步）
+        # if epoch == 0:
+        #     if os.path.exists(args.MODELFOLDER + 'test_params_best.pth'):
+        #         pass
+        #     else:
+        #         torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
+        #     if use_gpu:
+        #         PLNet0 = PalmLocNet()
+        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
+        #         PLNet0 = PLNet0.cuda()
+        #     else:
+        #         PLNet0 = PalmLocNet()
+        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
+        #
+        #     test_output_Plnet0 = PLNet0(test_x)
+        #     test_loss_func_Plnet0 = Myloss()
+        #     test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
+        #     test_compare_loss[0] = test_loss_Plnet0
+        # else:
+        #     torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_epoch.pth')
+        #     if use_gpu:
+        #         PLNet0 = PalmLocNet()
+        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
+        #         PLNet0 = PLNet0.cuda()
+        #     else:
+        #         PLNet0 = PalmLocNet()
+        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
+        #
+        #     test_output_Plnet0 = PLNet0(test_x)
+        #     test_loss_func_Plnet0 = Myloss()
+        #     test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
+        #     test_compare_loss.append(test_loss_Plnet0)
+        #
+        #     if test_compare_loss[epoch]<test_compare_loss[epoch-1]:
+        #         torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
+        #         print('save the best test model in epoch', epoch)
+        #     else:
+        #         print('no better test in this epoch', epoch)
 
 #只加载训练好的参数
 def test_PalmLocNet(test_x, test_y):
     if use_gpu:
         PLNet = PalmLocNet()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
+        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
         PLNet = PLNet.cuda()
     else:
         PLNet = PalmLocNet()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
+        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
     test_output_Plnet = PLNet(test_x)
     test_loss_func_Plnet = Myloss()
     test_GIoU_Plnet = test_loss_func_Plnet.MyGIoU(test_output_Plnet, test_y).sum()/test_y.shape[0]

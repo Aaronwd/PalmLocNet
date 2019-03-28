@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
-              <caret line="186" column="34" selection-start-line="186" selection-start-column="34" selection-end-line="186" selection-end-column="34" />
+            <state relative-caret-position="3080">
+              <caret line="303" column="82" selection-start-line="303" selection-start-column="82" selection-end-line="303" selection-end-column="82" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -37,23 +37,24 @@
         <option value="$PROJECT_DIR$/video-picture.py" />
         <option value="$PROJECT_DIR$/video_picture_save.py" />
         <option value="$PROJECT_DIR$/readxml_org.py" />
-        <option value="$PROJECT_DIR$/PalmLocNet_test.py" />
         <option value="$PROJECT_DIR$/myloss_test.py" />
+        <option value="$PROJECT_DIR$/PalmLocNet_test.py" />
         <option value="$PROJECT_DIR$/main_PalmLocNet.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
-    <option name="y" value="101" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="252" />
+    <option name="y" value="489" />
     <option name="width" value="1299" />
-    <option name="height" value="708" />
+    <option name="height" value="617" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -65,7 +66,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -223,9 +223,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="101" width="1299" height="708" extended-state="0" />
+    <frame x="80" y="51" width="1299" height="708" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.023529412" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.090980396" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -238,7 +239,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.32880846" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.49827588" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.38965517" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -305,12 +306,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PalmLocNet_test.py" />
     <entry file="file://$PROJECT_DIR$/myloss_test.py" />
+    <entry file="file://$PROJECT_DIR$/PalmLocNet_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6688">
+          <caret line="314" selection-start-line="314" selection-end-line="314" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="186" column="34" selection-start-line="186" selection-start-column="34" selection-end-line="186" selection-end-column="34" />
+        <state relative-caret-position="3080">
+          <caret line="303" column="82" selection-start-line="303" selection-start-column="82" selection-end-line="303" selection-end-column="82" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
