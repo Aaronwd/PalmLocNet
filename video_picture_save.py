@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-savepath = '/home/aaron/桌面/PalmLocNet/video-pic-test/wangdong'
-cap = cv2.VideoCapture(1)
+savepath = '/home/aaron/桌面/video-pic-test/wangdong' #记得检查
+cap = cv2.VideoCapture(0)
 
 #保存成视频的时候无法播放，需要进一步检查
 #fourcc = cv2.VideoWriter_fourcc(*'mp4v')

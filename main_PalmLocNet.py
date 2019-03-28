@@ -10,7 +10,7 @@ from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 
-######pic_size = 64
+######pic_size = 480
 
 #设置超参数
 parser = argparse.ArgumentParser(description='super params')
@@ -41,10 +41,6 @@ args = parser.parse_args()
 use_gpu = torch.cuda.is_available()
 print('use GPU:',use_gpu)
 
-#数据预处理
-pass
-
-
 #将数据导入到pytorch的dataloader中，以便进行批训练、打乱顺序等动作
 def default_loader(path):
     return Image.open(path).convert('RGB')
@@ -57,7 +53,7 @@ class MyDataset(Dataset):
             line = line.strip('\n')
             line = line.rstrip()
             words = line.split()
-            imgs.append((words[0], [float(words[1]),float(words[2]),float(words[3]),float(words[4])]))
+            imgs.append((words[0], torch.tensor([float(words[1]),float(words[2]),float(words[3]),float(words[4])])))
         self.imgs = imgs
         self.transform = transform
         self.target_transform = target_transform
@@ -73,28 +69,23 @@ class MyDataset(Dataset):
     def __len__(self):
         return len(self.imgs)
 
-train_data = MyDataset(txt=args.PICTUREFOLDER+'trainset/'+'train.txt', transform=transforms.ToTensor())
-test_data = MyDataset(txt=args.PICTUREFOLDER+'testset/'+'test.txt', transform=transforms.ToTensor())
-train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
-#test_loader = DataLoader(dataset=test_data, batch_size=args.BATCH_SIZE)
-
-# test_x =
-# test_y =
-#
-# for (tx, ty) in enumerate(test_loader):
-#     if use_gpu:
-#         test_x = tx.cuda()
-#         test_y = ty.cuda()
-#     else:
-#         test_x = tx
-#         test_y = ty
-测试数据
-if use_gpu:
-    test_x = torch.unsqueeze(test_data.test_data, dim=1).type(torch.FloatTensor)[:1].cuda()/255.
-    test_y = test_data.test_labels[:1].cuda()
+if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists(args.PICTUREFOLDER+'testset/'+'test.txt') :
+    print('train.txt and test.txt have been existed')
+    train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms.ToTensor())
+    test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms.ToTensor())
+    train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
+    test_loader = DataLoader(dataset=test_data, batch_size=args.BATCH_SIZE)
 else:
-    test_x = torch.unsqueeze(test_data.test_data, dim=1).type(torch.FloatTensor)[:1]/255.
-    test_y = test_data.test_labels[:1]
+    print('you need to prepare your train.txt and test.txt first!')
+
+#测试数据
+for k, (tx, ty) in enumerate(test_loader):
+    if use_gpu:
+        test_x = tx.cuda()
+        test_y = ty.cuda()
+    else:
+        test_x = tx
+        test_y = ty
 
 #神经网络建模
 class PalmLocNet(nn.Module):
@@ -111,7 +102,7 @@ class PalmLocNet(nn.Module):
             nn.MaxPool2d(kernel_size=2)
         )
         self.outlinear = nn.Sequential(
-            nn.Linear(32 * 16 * 16, 128),
+            nn.Linear(32 * 120 * 120, 128),
             nn.ReLU(),
             nn.Linear(128, 4)
         )
@@ -120,7 +111,7 @@ class PalmLocNet(nn.Module):
         x = self.plnet1(x)
         x = self.plnet2(x)
         x = x.view(x.size(0),-1)
-        output = self.outlinear()
+        output = self.outlinear(x)
         return output
 
 #自定义损失函数
@@ -128,38 +119,39 @@ class Myloss(nn.Module):
     def __init__(self):
         super(Myloss, self).__init__()
     def MyGIoU(self, pred_loc, truth_loc):
-        x_p1 = pred_loc[0]
-        y_p1 = pred_loc[1]
-        x_p2 = pred_loc[2]
-        y_p2 = pred_loc[3]
+        x_p1 = pred_loc[:,0]
+        y_p1 = pred_loc[:,1]
+        x_p2 = pred_loc[:,2]
+        y_p2 = pred_loc[:,3]
         #print(x_p1, y_p1, x_p2, y_p2)
 
-        x_g1 = truth_loc[0]
-        y_g1 = truth_loc[1]
-        x_g2 = truth_loc[2]
-        y_g2 = truth_loc[3]
+        x_g1 = truth_loc[:,0]
+        y_g1 = truth_loc[:,1]
+        x_g2 = truth_loc[:,2]
+        y_g2 = truth_loc[:,3]
         #print(x_g1, y_g1, x_g2, y_g2)
 
         A_g = (x_g2 - x_g1) * (y_g2 - y_g1)
         A_p = (x_p2 - x_p1) * (y_p2 - y_p1)
         #print(A_g, A_p)
 
-        x_I1 = max(x_p1, x_g1)
-        x_I2 = min(x_p2, x_g2)
-        y_I1 = max(y_p1, y_g1)
-        y_I2 = min(y_p2, y_g2)
+        x_I1 = torch.max(x_p1, x_g1)
+        x_I2 = torch.min(x_p2, x_g2)
+        y_I1 = torch.max(y_p1, y_g1)
+        y_I2 = torch.min(y_p2, y_g2)
         #print(x_I1, x_I2, y_I1, y_I2)
 
-        if x_I2 > x_I1 and y_I2 > y_I1:
-            I = (x_I2 - x_I1) * (y_I2 - y_I1)
-        else:
-            I = torch.tensor([0])
+        # if x_I2 > x_I1 and y_I2 > y_I1:
+        #     I = (x_I2 - x_I1) * (y_I2 - y_I1)
+        # else:
+        #     I = torch.tensor([0])
         #print(I)
+        I = (torch.max((x_I2 - x_I1), torch.zeros(x_I1.shape))) * (torch.max((y_I2 - y_I1), torch.zeros(x_I1.shape)))
 
-        x_C1 = min(x_p1, x_g1)
-        x_C2 = max(x_p2, x_g2)
-        y_C1 = min(y_p1, y_g1)
-        y_C2 = max(y_p2, y_g2)
+        x_C1 = torch.min(x_p1, x_g1)
+        x_C2 = torch.max(x_p2, x_g2)
+        y_C1 = torch.min(y_p1, y_g1)
+        y_C2 = torch.max(y_p2, y_g2)
         #print(x_C1, x_C2, y_C1, y_C2)
 
         A_c = (x_C2 - x_C1) * (y_C2 - y_C1)
@@ -170,8 +162,8 @@ class Myloss(nn.Module):
         return myGIoU
 
     def forward(self, pred_loc, truth_loc):
-        locMSEloss = (pred_loc-truth_loc).pow(2).sum()/4
-        gIoUloss = 1- self.MyGIoU(pred_loc, truth_loc)
+        locMSEloss = (pred_loc-truth_loc).pow(2).sum()/(4*truth_loc.shape[0])
+        gIoUloss = 1- self.MyGIoU(pred_loc, truth_loc).sum()/truth_loc.shape[0]
         myloss = locMSEloss+gIoUloss
         return myloss
 
@@ -188,6 +180,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             palnet = PalmLocNet()
             palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
     else:
+        print('It is the first time to train the model!')
         if use_gpu:
             palnet = PalmLocNet()
             palnet = palnet.cuda()
@@ -197,8 +190,8 @@ def train_PalmLocNet(train_loader, test_x, test_y):
     optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
     loss_func = Myloss()
 
-    compare_loss = []
-    test_compare_loss = []
+    compare_loss = [0]
+    test_compare_loss = [0]
 
     for epoch in range(args.EPOCH):
         for step, (x, y) in enumerate(train_loader):
@@ -222,8 +215,8 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             if step % 50 == 0:
                 test_output = palnet(test_x)
                 test_loss_func = Myloss()
-                test_GIoU = test_loss_func.MyGIoU(test_output,test_y)
-                test_locMSEloss = (test_output - test_y).pow(2).sum() / 4
+                test_GIoU = test_loss_func.MyGIoU(test_output,test_y).sum()/test_y.shape[0]
+                test_locMSEloss = (test_output - test_y).pow(2).sum() /(4*test_y.shape[0])
                 test_loss = test_loss_func(test_output,test_y)
                 print('Epoch', epoch, '\n'
                       'train loss: %.4f' % loss.data.cpu().numpy(),'\n'
@@ -295,8 +288,8 @@ def test_PalmLocNet(test_x, test_y):
         PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
     test_output_Plnet = PLNet(test_x)
     test_loss_func_Plnet = Myloss()
-    test_GIoU_Plnet = test_loss_func_Plnet.MyGIoU(test_output_Plnet, test_y)
-    test_locMSEloss_Plnet = (test_output_Plnet - test_y).pow(2).sum() / 4
+    test_GIoU_Plnet = test_loss_func_Plnet.MyGIoU(test_output_Plnet, test_y).sum()/test_y.shape[0]
+    test_locMSEloss_Plnet = (test_output_Plnet - test_y).pow(2).sum() / (4*test_y.shape[0])
     test_loss_Plnet = test_loss_func_Plnet(test_output_Plnet, test_y)
     print('test GIoU: %.4f' % test_GIoU_Plnet, '\n'
           'test locMSEloss: %.4f' % test_locMSEloss_Plnet,'\n'
