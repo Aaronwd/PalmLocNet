@@ -239,7 +239,11 @@ def train_PalmLocNet(train_loader, test_x, test_y):
 
         #保存训练loss最小的模型参数（按周期记步）
         if epoch == 0:
-            torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
+            if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
+                print('exist the train_params_best.pth!')
+                pass
+            else:
+                torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
             compare_loss[0] = loss
         else:
             # append方法并没有返回值
@@ -252,7 +256,10 @@ def train_PalmLocNet(train_loader, test_x, test_y):
 
         # 保存测试loss最小的模型参数（按周期记步）
         if epoch == 0:
-            torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
+            if os.path.exists(args.MODELFOLDER + 'test_params_best.pth'):
+                pass
+            else:
+                torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
             if use_gpu:
                 PLNet0 = PalmLocNet()
                 PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
