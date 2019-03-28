@@ -119,6 +119,11 @@ class Myloss(nn.Module):
     def __init__(self):
         super(Myloss, self).__init__()
     def MyGIoU(self, pred_loc, truth_loc):
+        if use_gpu:
+            pred_loc = pred_loc.cuda()
+            truth_loc = truth_loc.cuda()
+        else:
+            pass
         x_p1 = pred_loc[:,0]
         y_p1 = pred_loc[:,1]
         x_p2 = pred_loc[:,2]
@@ -146,7 +151,11 @@ class Myloss(nn.Module):
         # else:
         #     I = torch.tensor([0])
         #print(I)
-        I = (torch.max((x_I2 - x_I1), torch.zeros(x_I1.shape))) * (torch.max((y_I2 - y_I1), torch.zeros(x_I1.shape)))
+        if use_gpu:
+            zer = torch.zeros(x_I1.shape).cuda()
+        else:
+            zer = torch.zeros(x_I1.shape)
+        I = (torch.max((x_I2 - x_I1), zer)) * (torch.max((y_I2 - y_I1), zer))
 
         x_C1 = torch.min(x_p1, x_g1)
         x_C2 = torch.max(x_p2, x_g2)
