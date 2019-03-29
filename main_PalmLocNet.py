@@ -11,6 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 
 #画boundingbox模块
+import numpy as np
 import cv2
 
 ######pic_size = 480
@@ -38,6 +39,8 @@ def str2bool(v):
 
 parser.add_argument('-t','--TrainOrNot', type=str2bool, nargs='?', const=True, required= True,
                     help='TrainOrNot (default: True)')
+parser.add_argument('-v','--VideotestOrNot', type=str2bool, nargs='?', const=True, required= True,
+                    help='VideotestOrNot (default: True)')
 args = parser.parse_args()
 
 #检测是否有利用的gpu环境
@@ -273,11 +276,7 @@ def test_PalmLocNet(test_x, test_y):
           'total test loss: %.4f' % test_loss_Plnet)
     return test_output_Plnet
 
-#运行训练以及测试模型
-if (__name__ == '__main__') and args.TrainOrNot:
-    train_PalmLocNet(train_loader, test_x, test_y)
-
-if (__name__ == '__main__') and (not args.TrainOrNot):
+def testpic():
     oupt = test_PalmLocNet(test_x, test_y)
     fh = open(args.PICTUREFOLDER + 'testset/' + 'test.txt', 'r')
     imgs = []
@@ -285,23 +284,66 @@ if (__name__ == '__main__') and (not args.TrainOrNot):
         line = line.strip('\n')
         line = line.rstrip()
         words = line.split()
-        imgs.append([words[0],words[1],words[2],words[3],words[4]])
+        imgs.append([words[0], words[1], words[2], words[3], words[4]])
 
     k = 0
     for p in imgs:
         img = cv2.imread(p[0])
-        #画矩形框
-        #预测框
+        # 画矩形框
+        # 预测框
         cv2.rectangle(img, (oupt[k][0], oupt[k][1]), (oupt[k][2], oupt[k][3]), (0, 255, 0), 4)
-        cv2.rectangle(img, (int(p[1]), int(p[2])), (int(p[3]), int(p[4])),(0, 0, 255), 4)
-     #   print(oupt[k][0], oupt[k][1],oupt[k][2], oupt[k][3])
-     #   print(p[1], p[2], p[3], p[4])
+        cv2.rectangle(img, (int(p[1]), int(p[2])), (int(p[3]), int(p[4])), (0, 0, 255), 4)
         k += 1
-        # 标注文本
-       # font = cv2.FONT_HERSHEY_SUPLEX
-       # text = str(k)
-       # cv2.putText(img, text, (212, 310), font, 2, (0, 0, 255), 1)
-        cv2.imwrite(args.PICTUREFOLDER + 'testset/' +str(k)+'_test_truth.jpg', img)
+        cv2.imwrite(args.PICTUREFOLDER + 'testset/' + str(k) + '_test_truth.jpg', img)
+
+
+
+def testvideolocnet():
+    if use_gpu:
+        PLNet = PalmLocNet()
+        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        PLNet = PLNet.cuda()
+    else:
+        PLNet = PalmLocNet()
+        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
+    cap = cv2.VideoCapture(0)
+    while (cap.isOpened()):
+        ret, frame = cap.read()
+        if ret == True:
+            print(frame.shape)
+            frame = cv2.resize(frame, (480, 480))
+             #用permute改变高维tensor的维数位置
+            tframe = torch.from_numpy(frame).permute(2,0,1)
+             #加一维
+            tframe = tframe.unsqueeze(0)
+            tframe = tframe.float()
+            outloc = PLNet(tframe)
+        #    tframe = tframe.squeeze(0)
+        #    tframe = tframe.permute(1, 2, 0)
+         #    frame = frame.numpy()
+            print(outloc)
+            cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
+            cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
+            frame = cv2.resize(frame, (640, 480))
+         #    print(frame)
+            cv2.imshow('frame', frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        else:
+                break
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+#运行训练以及测试模型
+if (__name__ == '__main__') and args.TrainOrNot:
+    train_PalmLocNet(train_loader, test_x, test_y)
+
+if (__name__ == '__main__') and (not args.TrainOrNot):
+    if args.VideotestOrNot:
+        testvideolocnet()
+    else:
+        testpic()
 
 
 

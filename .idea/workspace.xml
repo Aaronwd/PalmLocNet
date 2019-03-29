@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3080">
-              <caret line="303" column="82" selection-start-line="303" selection-start-column="82" selection-end-line="303" selection-end-column="82" />
+            <state relative-caret-position="7590">
+              <caret line="345" column="17" lean-forward="true" selection-start-line="345" selection-start-column="17" selection-end-line="345" selection-end-column="17" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -39,15 +39,16 @@
         <option value="$PROJECT_DIR$/readxml_org.py" />
         <option value="$PROJECT_DIR$/myloss_test.py" />
         <option value="$PROJECT_DIR$/PalmLocNet_test.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py" />
         <option value="$PROJECT_DIR$/main_PalmLocNet.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="252" />
-    <option name="y" value="489" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="72" />
+    <option name="y" value="48" />
     <option name="width" value="1299" />
-    <option name="height" value="617" />
+    <option name="height" value="720" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -69,6 +70,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
@@ -148,7 +150,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="readxml_org" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="scratch_4" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -156,11 +158,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/readxml_org.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -193,10 +195,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main_PalmLocNet" />
+        <item itemvalue="Python.scratch_4" />
         <item itemvalue="Python.myloss_test" />
         <item itemvalue="Python.PalmLocNet_test" />
         <item itemvalue="Python.video_picture_save" />
-        <item itemvalue="Python.readxml_org" />
       </list>
     </recent_temporary>
   </component>
@@ -223,15 +225,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="80" y="51" width="1299" height="708" extended-state="0" />
-    <editor active="true" />
+    <frame x="72" y="48" width="1299" height="720" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.090980396" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.090980396" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.36801243" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.36655405" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.71266234" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -239,7 +240,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.32880846" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.38965517" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3902027" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -307,22 +308,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/myloss_test.py" />
-    <entry file="file://$PROJECT_DIR$/PalmLocNet_test.py">
+    <entry file="file://$PROJECT_DIR$/PalmLocNet_test.py" />
+    <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6688">
-          <caret line="314" selection-start-line="314" selection-end-line="314" />
+        <state relative-caret-position="7590">
+          <caret line="345" column="17" lean-forward="true" selection-start-line="345" selection-start-column="17" selection-end-line="345" selection-end-column="17" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3080">
-          <caret line="303" column="82" selection-start-line="303" selection-start-column="82" selection-end-line="303" selection-end-column="82" />
+        <state relative-caret-position="462">
+          <caret line="22" column="13" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
