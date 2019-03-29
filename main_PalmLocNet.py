@@ -10,6 +10,9 @@ from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 
+#画boundingbox模块
+import cv2
+
 ######pic_size = 480
 
 #设置超参数
@@ -144,18 +147,13 @@ class Myloss(nn.Module):
         x_I2 = torch.min(x_p2, x_g2)
         y_I1 = torch.max(y_p1, y_g1)
         y_I2 = torch.min(y_p2, y_g2)
-        #print(x_I1, x_I2, y_I1, y_I2)
 
-        # if x_I2 > x_I1 and y_I2 > y_I1:
-        #     I = (x_I2 - x_I1) * (y_I2 - y_I1)
-        # else:
-        #     I = torch.tensor([0])
-        #print(I)
         if use_gpu:
             zer = torch.zeros(x_I1.shape).cuda()
         else:
             zer = torch.zeros(x_I1.shape)
         I = (torch.max((x_I2 - x_I1), zer)) * (torch.max((y_I2 - y_I1), zer))
+        # print(I)
 
         x_C1 = torch.min(x_p1, x_g1)
         x_C2 = torch.max(x_p2, x_g2)
@@ -187,7 +185,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             palnet = palnet.cuda()
         else:
             palnet = PalmLocNet()
-            palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+            palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
     else:
         print('It is the first time to train the model!')
         if use_gpu:
@@ -200,7 +198,6 @@ def train_PalmLocNet(train_loader, test_x, test_y):
     loss_func = Myloss()
 
     compare_loss = [0]
-    test_compare_loss = [0]
 
     for epoch in range(args.EPOCH):
         for step, (x, y) in enumerate(train_loader):
@@ -210,6 +207,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             else:
                 b_x = x
                 b_y = y
+
             output = palnet(b_x)
             loss = loss_func(output, b_y)
             optimizer.zero_grad()  # 将上一步梯度值清零
@@ -243,55 +241,18 @@ def train_PalmLocNet(train_loader, test_x, test_y):
                 print('exist the train_params_best.pth!')
                 pass
             else:
+                print('first make the train_params_best.pth')
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
             compare_loss[0] = loss
+           # print('compare_loss:', loss)
         else:
-            # append方法并没有返回值
             compare_loss.append(loss)
+           # print('compare_loss.append:', compare_loss)
             if compare_loss[epoch]<compare_loss[epoch-1]:
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
                 print('save the best trained model in epoch', epoch)
             else:
                 print('no better in this epoch', epoch)
-
-        # # 保存测试loss最小的模型参数（按周期记步）
-        # if epoch == 0:
-        #     if os.path.exists(args.MODELFOLDER + 'test_params_best.pth'):
-        #         pass
-        #     else:
-        #         torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
-        #     if use_gpu:
-        #         PLNet0 = PalmLocNet()
-        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
-        #         PLNet0 = PLNet0.cuda()
-        #     else:
-        #         PLNet0 = PalmLocNet()
-        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_best.pth'))
-        #
-        #     test_output_Plnet0 = PLNet0(test_x)
-        #     test_loss_func_Plnet0 = Myloss()
-        #     test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
-        #     test_compare_loss[0] = test_loss_Plnet0
-        # else:
-        #     torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_epoch.pth')
-        #     if use_gpu:
-        #         PLNet0 = PalmLocNet()
-        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
-        #         PLNet0 = PLNet0.cuda()
-        #     else:
-        #         PLNet0 = PalmLocNet()
-        #         PLNet0.load_state_dict(torch.load(args.MODELFOLDER + 'test_params_epoch.pth'))
-        #
-        #     test_output_Plnet0 = PLNet0(test_x)
-        #     test_loss_func_Plnet0 = Myloss()
-        #     test_loss_Plnet0 = test_loss_func_Plnet0(test_output_Plnet0, test_y)
-        #     test_compare_loss.append(test_loss_Plnet0)
-        #
-        #     if test_compare_loss[epoch]<test_compare_loss[epoch-1]:
-        #         torch.save(palnet.state_dict(), args.MODELFOLDER + 'test_params_best.pth')
-        #         print('save the best test model in epoch', epoch)
-        #     else:
-        #         print('no better test in this epoch', epoch)
 
 #只加载训练好的参数
 def test_PalmLocNet(test_x, test_y):
@@ -301,7 +262,7 @@ def test_PalmLocNet(test_x, test_y):
         PLNet = PLNet.cuda()
     else:
         PLNet = PalmLocNet()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
     test_output_Plnet = PLNet(test_x)
     test_loss_func_Plnet = Myloss()
     test_GIoU_Plnet = test_loss_func_Plnet.MyGIoU(test_output_Plnet, test_y).sum()/test_y.shape[0]
@@ -310,14 +271,37 @@ def test_PalmLocNet(test_x, test_y):
     print('test GIoU: %.4f' % test_GIoU_Plnet, '\n'
           'test locMSEloss: %.4f' % test_locMSEloss_Plnet,'\n'
           'total test loss: %.4f' % test_loss_Plnet)
+    return test_output_Plnet
 
 #运行训练以及测试模型
 if (__name__ == '__main__') and args.TrainOrNot:
     train_PalmLocNet(train_loader, test_x, test_y)
 
 if (__name__ == '__main__') and (not args.TrainOrNot):
-    test_PalmLocNet(test_x, test_y)
+    oupt = test_PalmLocNet(test_x, test_y)
+    fh = open(args.PICTUREFOLDER + 'testset/' + 'test.txt', 'r')
+    imgs = []
+    for line in fh:
+        line = line.strip('\n')
+        line = line.rstrip()
+        words = line.split()
+        imgs.append([words[0],words[1],words[2],words[3],words[4]])
 
+    k = 0
+    for p in imgs:
+        img = cv2.imread(p[0])
+        #画矩形框
+        #预测框
+        cv2.rectangle(img, (oupt[k][0], oupt[k][1]), (oupt[k][2], oupt[k][3]), (0, 255, 0), 4)
+        cv2.rectangle(img, (int(p[1]), int(p[2])), (int(p[3]), int(p[4])),(0, 0, 255), 4)
+     #   print(oupt[k][0], oupt[k][1],oupt[k][2], oupt[k][3])
+     #   print(p[1], p[2], p[3], p[4])
+        k += 1
+        # 标注文本
+       # font = cv2.FONT_HERSHEY_SUPLEX
+       # text = str(k)
+       # cv2.putText(img, text, (212, 310), font, 2, (0, 0, 255), 1)
+        cv2.imwrite(args.PICTUREFOLDER + 'testset/' +str(k)+'_test_truth.jpg', img)
 
 
 
