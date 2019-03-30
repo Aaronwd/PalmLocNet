@@ -24,7 +24,7 @@ parser.add_argument('-b','--BATCH_SIZE', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
-parser.add_argument('-m','--MODELFOLDER',type= str, default='./model/',
+parser.add_argument('-m','--MODELFOLDER',type= str, default='./model01/',
                 help="folder to store model")
 # 有点小问题，要保证和实际的数据集的路径保持一致，不够智能
 parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./picture/',
@@ -99,16 +99,36 @@ class PalmLocNet(nn.Module):
         super(PalmLocNet, self).__init__()
         self.plnet1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels= 16, kernel_size= 5, stride =1, padding= 2),
+       #     torch.nn.Dropout(0.5),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size =2)
         )
         self.plnet2 = nn.Sequential(
             nn.Conv2d(in_channels=16, out_channels=32, kernel_size=5, stride=1, padding=2),
+        #    torch.nn.Dropout(0.5),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2)
+        )
+        self.plnet3 = nn.Sequential(
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5, stride=1, padding=2),
+        #    torch.nn.Dropout(0.5),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2)
+        )
+        self.plnet4 = nn.Sequential(
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=1, padding=2),
+        #    torch.nn.Dropout(0.5),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2)
+        )
+        self.plnet5 = nn.Sequential(
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=1, padding=2),
+        #    torch.nn.Dropout(0.5),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2)
         )
         self.outlinear = nn.Sequential(
-            nn.Linear(32 * 120 * 120, 128),
+            nn.Linear(256 * 15* 15, 128),
             torch.nn.Dropout(0.5),  # drop 50% of the neuron
             nn.ReLU(),
             nn.Linear(128, 4)
@@ -117,6 +137,9 @@ class PalmLocNet(nn.Module):
     def forward(self, x):
         x = self.plnet1(x)
         x = self.plnet2(x)
+        x = self.plnet3(x)
+        x = self.plnet4(x)
+        x = self.plnet5(x)
         x = x.view(x.size(0),-1)
         output = self.outlinear(x)
         return output
@@ -203,7 +226,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
     optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
     loss_func = Myloss()
 
-    compare_loss = [0]
+   # compare_loss = [0]
 
     for epoch in range(args.EPOCH):
         for step, (x, y) in enumerate(train_loader):
@@ -253,14 +276,15 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             else:
                 print('first make the train_params_best.pth')
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
-            compare_loss[0] = loss
+            best_loss = loss
            # print('compare_loss:', loss)
         else:
-            compare_loss.append(loss)
+           # compare_loss.append(loss)
            # print('compare_loss.append:', compare_loss)
-            if compare_loss[epoch]<compare_loss[epoch-1]:
+            if loss < best_loss:
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
                 print('save the best trained model in epoch', epoch)
+                best_loss = loss
             else:
                 print('no better in this epoch', epoch)
 

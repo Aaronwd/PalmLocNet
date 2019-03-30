@@ -1,0 +1,2 @@
+/home/aaron/桌面/PalmLocNet/picture/testset/wangdong315.jpg 144 62 370 402
+/home/aaron/桌面/PalmLocNet/picture/testset/wangdong364.jpg 41 90 201 382
