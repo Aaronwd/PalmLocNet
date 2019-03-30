@@ -134,7 +134,7 @@ class Myloss(nn.Module):
         y_p1 = pred_loc[:,1]
         x_p2 = pred_loc[:,2]
         y_p2 = pred_loc[:,3]
-        #print(x_p1, y_p1, x_p2, y_p2)
+        #print('x_p1, y_p1, x_p2, y_p2',x_p1, y_p1, x_p2, y_p2)
 
         x_g1 = truth_loc[:,0]
         y_g1 = truth_loc[:,1]
@@ -143,7 +143,12 @@ class Myloss(nn.Module):
         #print(x_g1, y_g1, x_g2, y_g2)
 
         A_g = (x_g2 - x_g1) * (y_g2 - y_g1)
-        A_p = (x_p2 - x_p1) * (y_p2 - y_p1)
+        #防止xp2小于xp1
+        if use_gpu:
+            zer = torch.zeros(x_g1.shape).cuda()
+        else:
+            zer = torch.zeros(x_g1.shape)
+        A_p = (torch.max((x_p2 - x_p1), zer)) * (torch.max((y_p2 - y_p1), zer))
         #print(A_g, A_p)
 
         x_I1 = torch.max(x_p1, x_g1)
@@ -151,10 +156,6 @@ class Myloss(nn.Module):
         y_I1 = torch.max(y_p1, y_g1)
         y_I2 = torch.min(y_p2, y_g2)
 
-        if use_gpu:
-            zer = torch.zeros(x_I1.shape).cuda()
-        else:
-            zer = torch.zeros(x_I1.shape)
         I = (torch.max((x_I2 - x_I1), zer)) * (torch.max((y_I2 - y_I1), zer))
         # print(I)
 
@@ -318,14 +319,10 @@ def testvideolocnet():
             tframe = tframe.unsqueeze(0)
             tframe = tframe.float()
             outloc = PLNet(tframe)
-        #    tframe = tframe.squeeze(0)
-        #    tframe = tframe.permute(1, 2, 0)
-         #    frame = frame.numpy()
             print(outloc)
             cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
             cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
             frame = cv2.resize(frame, (640, 480))
-         #    print(frame)
             cv2.imshow('frame', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
