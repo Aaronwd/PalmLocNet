@@ -80,7 +80,7 @@ if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists
     train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms.ToTensor())
     test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms.ToTensor())
     train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
-    test_loader = DataLoader(dataset=test_data, batch_size=args.BATCH_SIZE)
+    test_loader = DataLoader(dataset=test_data, batch_size=10)
 else:
     print('you need to prepare your train.txt and test.txt first!')
 
@@ -128,7 +128,10 @@ class PalmLocNet(nn.Module):
             nn.MaxPool2d(kernel_size=2)
         )
         self.outlinear = nn.Sequential(
-            nn.Linear(256 * 15* 15, 128),
+            nn.Linear(256 * 15* 15, 6400),
+            torch.nn.Dropout(0.5),  # drop 50% of the neuron
+            nn.ReLU(),
+            nn.Linear(6400, 128),
             torch.nn.Dropout(0.5),  # drop 50% of the neuron
             nn.ReLU(),
             nn.Linear(128, 4)
@@ -277,6 +280,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
                 print('first make the train_params_best.pth')
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
             best_loss = loss
+            print('best_loss in epoch 0:', best_loss)
            # print('compare_loss:', loss)
         else:
            # compare_loss.append(loss)
@@ -285,6 +289,7 @@ def train_PalmLocNet(train_loader, test_x, test_y):
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
                 print('save the best trained model in epoch', epoch)
                 best_loss = loss
+                print('new best_loss:', best_loss)
             else:
                 print('no better in this epoch', epoch)
 
