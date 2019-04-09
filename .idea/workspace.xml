@@ -3,36 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="24a960f9-ea2b-4099-8255-8014a55ba6d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gIoU_main_mulPalmLocNet_dropout.py" beforeDir="false" afterPath="$PROJECT_DIR$/gIoU_main_mulPalmLocNet_dropout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_PalmLocNet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_mulPalmLocNet_dropout.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/testset/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/picture/testset/test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/testset/wangdong315.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/testset/wangdong364.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/testxml/wangdong315.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/testxml/wangdong364.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/train.txt" beforeDir="false" afterPath="$PROJECT_DIR$/picture/trainset/train.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong213.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong222.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong246.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong287.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong337.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong353.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong384.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong398.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong422.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainset/wangdong485.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong213.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong222.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong246.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong287.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong337.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong353.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong384.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong398.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong422.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture/trainxml/wangdong485.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/video_picture_save.py" beforeDir="false" afterPath="$PROJECT_DIR$/video_picture_save.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BN_mulPalmLocNet_dropout.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gIoU_main_mulPalmLocNet_dropout.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/readxml_org.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/video_picture_save.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,10 +17,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/BN_mulPalmLocNet_dropout.py">
+        <entry file="file://$PROJECT_DIR$/vggPalmLocNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="88">
-              <caret line="136" column="8" selection-start-line="136" selection-start-column="8" selection-end-line="136" selection-end-column="8" />
+            <state relative-caret-position="-2068">
+              <caret line="180" column="29" lean-forward="true" selection-start-line="180" selection-start-column="29" selection-end-line="180" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="25" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -75,31 +61,23 @@
         <option value="$PROJECT_DIR$/main_mulPalmLocNet_dropout_BN.py" />
         <option value="$PROJECT_DIR$/mulPalmLocNet_dropout_BN.py" />
         <option value="$PROJECT_DIR$/BN_mulPalmLocNet_dropout.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py" />
+        <option value="$PROJECT_DIR$/vggPalmLocNet.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-217" />
-    <option name="y" value="24" />
-    <option name="width" value="1299" />
-    <option name="height" value="736" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="273" />
+    <option name="y" value="257" />
+    <option name="width" value="1293" />
+    <option name="height" value="656" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="PalmLocNet" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PalmLocNet" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -120,7 +98,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main_mulPalmLocNet_dropout_BN">
+  <component name="RunManager" selected="Python.scratch_6">
     <configuration name="main_PalmLocNet" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -184,7 +162,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch_4" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="scratch_6" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -196,7 +174,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -228,11 +206,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.scratch_6" />
         <item itemvalue="Python.main_mulPalmLocNet_dropout_BN" />
         <item itemvalue="Python.video_picture_save" />
         <item itemvalue="Python.readxml_org" />
         <item itemvalue="Python.main_PalmLocNet" />
-        <item itemvalue="Python.scratch_4" />
       </list>
     </recent_temporary>
   </component>
@@ -259,14 +237,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
+    <frame x="273" y="257" width="1293" height="656" extended-state="1" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28191072" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.023640662" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.4027778" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.04658385" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.71266234" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -274,7 +253,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.13622291" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3167702" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.10795455" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -341,37 +320,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main_PalmLocNet.py" />
-    <entry file="file://$PROJECT_DIR$/readxml_org.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/readxml_org.py" />
     <entry file="file://$PROJECT_DIR$/main_mulPalmLocNet_dropout.py" />
-    <entry file="file://$PROJECT_DIR$/video_picture_save.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="12" column="27" selection-start-line="12" selection-start-column="27" selection-end-line="12" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gIoU_main_mulPalmLocNet_dropout.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
-          <caret line="296" column="36" selection-start-line="296" selection-start-column="36" selection-end-line="296" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/video_picture_save.py" />
+    <entry file="file://$PROJECT_DIR$/gIoU_main_mulPalmLocNet_dropout.py" />
     <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torch/nn/modules/batchnorm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="185">
@@ -381,10 +333,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_mulPalmLocNet_dropout_BN.py" />
     <entry file="file://$PROJECT_DIR$/mulPalmLocNet_dropout_BN.py" />
-    <entry file="file://$PROJECT_DIR$/BN_mulPalmLocNet_dropout.py">
+    <entry file="file://$PROJECT_DIR$/BN_mulPalmLocNet_dropout.py" />
+    <entry file="file://$PROJECT_DIR$/vggPalmLocNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="136" column="8" selection-start-line="136" selection-start-column="8" selection-end-line="136" selection-end-column="8" />
+        <state relative-caret-position="-2068">
+          <caret line="180" column="29" lean-forward="true" selection-start-line="180" selection-start-column="29" selection-end-line="180" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>

@@ -14,13 +14,15 @@ from PIL import Image
 import numpy as np
 import cv2
 
+import torch.nn.functional as F
+
 ######pic_size = 480
 
 #设置超参数
 parser = argparse.ArgumentParser(description='super params')
 parser.add_argument('-e','--EPOCH', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 1)')
-parser.add_argument('-b','--BATCH_SIZE', type=int, default=64, metavar='N',
+parser.add_argument('-b','--BATCH_SIZE', type=int, default=8, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
@@ -44,8 +46,10 @@ parser.add_argument('-v','--VideotestOrNot', type=str2bool, nargs='?', const=Tru
 args = parser.parse_args()
 
 #检测是否有利用的gpu环境
-use_gpu = torch.cuda.is_available()
-print('use GPU:',use_gpu)
+# use_gpu = torch.cuda.is_available()
+# print('use GPU:',use_gpu)
+
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 #将数据导入到pytorch的dataloader中，以便进行批训练、打乱顺序等动作
 def default_loader(path):
@@ -77,8 +81,13 @@ class MyDataset(Dataset):
 
 if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists(args.PICTUREFOLDER+'testset/'+'test.txt') :
     print('train.txt and test.txt have been existed')
-    train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms.ToTensor())
-    test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms.ToTensor())
+    transforms = transforms.Compose([
+       # transforms.Resize(224),
+        transforms.ToTensor(),
+   #     transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)),
+    ])
+    train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms)
+    test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms)
     train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(dataset=test_data, batch_size=10)
 else:
@@ -86,77 +95,80 @@ else:
 
 #测试数据
 for k, (tx, ty) in enumerate(test_loader):
-    if use_gpu:
-        test_x = tx.cuda()
-        test_y = ty.cuda()
-    else:
-        test_x = tx
-        test_y = ty
+    test_x = tx.to(device)
+    test_y = ty.to(device)/480
+    # if use_gpu:
+    #     test_x = tx.cuda()
+    #     test_y = ty.cuda()/480
+    # else:
+    #     test_x = tx
+    #     test_y = ty/480
+
+print('test_x', test_x)
+print('test_y', test_y)
+print('test_x.shape', test_x.shape)
+print('test_y.shape', test_y.shape)
 
 #神经网络建模
-class PalmLocNet(nn.Module):
-    def __init__(self):
-        super(PalmLocNet, self).__init__()
-        self.plnet1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels= 16, kernel_size= 5, stride =1, padding= 2),
-       #     torch.nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size =2)
-        )
-        self.plnet2 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=5, stride=1, padding=2),
-        #    torch.nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
-        self.plnet3 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5, stride=1, padding=2),
-        #    torch.nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
-        self.plnet4 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=1, padding=2),
-        #    torch.nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
-        self.plnet5 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=1, padding=2),
-        #    torch.nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
+cfg = {
+    'VGG11': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'VGG13': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'VGG16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    'VGG19': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
+}
+
+class VGG(nn.Module):
+    def __init__(self, vgg_name):
+        super(VGG, self).__init__()
+        self.features = self._make_layers(cfg[vgg_name])
         self.outlinear = nn.Sequential(
-            nn.Linear(256 * 15* 15, 6400),
+            nn.Linear(512 * 15 * 15, 4096),
             torch.nn.Dropout(0.5),  # drop 50% of the neuron
+            #   nn.BatchNorm1d(6400),
             nn.ReLU(),
-            nn.Linear(6400, 128),
-            torch.nn.Dropout(0.5),  # drop 50% of the neuron
-            nn.ReLU(),
-            nn.Linear(128, 4)
+            nn.Linear(4096, 4),
+            # torch.nn.Dropout(0.5),  # drop 50% of the neuron
+            # #    nn.BatchNorm1d(128),
+            # nn.ReLU(),
+            # nn.Linear(128, 4)
         )
 
     def forward(self, x):
-        x = self.plnet1(x)
-        x = self.plnet2(x)
-        x = self.plnet3(x)
-        x = self.plnet4(x)
-        x = self.plnet5(x)
+        x = self.features(x)
         x = x.view(x.size(0),-1)
         output = self.outlinear(x)
         return output
+
+    def _make_layers(self, cfg):
+        layers = []
+        in_channels = 3
+        for x in cfg:
+            if x == 'M':
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+            else:
+                layers += [nn.Conv2d(in_channels, x, kernel_size=3, padding=1),
+                           nn.BatchNorm2d(x),
+                           nn.ReLU(inplace=True)]
+                in_channels = x
+        #layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
+        return nn.Sequential(*layers)
+
+def PalmLocNet():
+    return VGG('VGG16')
+
 
 #自定义损失函数
 class Myloss(nn.Module):
     def __init__(self):
         super(Myloss, self).__init__()
     def MyGIoU(self, pred_loc, truth_loc):
-        if use_gpu:
-            pred_loc = pred_loc.cuda()
-            truth_loc = truth_loc.cuda()
-        else:
-            pass
+        pred_loc = pred_loc.to(device)
+        truth_loc = truth_loc.to(device)
+        # if use_gpu:
+        #     pred_loc = pred_loc.cuda()
+        #     truth_loc = truth_loc.cuda()
+        # else:
+        #     pass
         x_p1 = pred_loc[:,0]
         y_p1 = pred_loc[:,1]
         x_p2 = pred_loc[:,2]
@@ -171,10 +183,11 @@ class Myloss(nn.Module):
 
         A_g = (x_g2 - x_g1) * (y_g2 - y_g1)
         #防止xp2小于xp1
-        if use_gpu:
-            zer = torch.zeros(x_g1.shape).cuda()
-        else:
-            zer = torch.zeros(x_g1.shape)
+        zer = torch.zeros(x_g1.shape).to(device)
+        # if use_gpu:
+        #     zer = torch.zeros(x_g1.shape).cuda()
+        # else:
+        #     zer = torch.zeros(x_g1.shape)
         A_p = (torch.max((x_p2 - x_p1), zer)) * (torch.max((y_p2 - y_p1), zer))
         #print(A_g, A_p)
 
@@ -200,10 +213,11 @@ class Myloss(nn.Module):
         return myGIoU
 
     def forward(self, pred_loc, truth_loc):
-      #  locMSEloss = (pred_loc-truth_loc).pow(2).sum()/(4*truth_loc.shape[0])
+        pred_loc = pred_loc.to(device)
+        truth_loc = truth_loc.to(device)
+        locMSEloss = ((pred_loc-truth_loc).pow(2).sum()/(4*truth_loc.shape[0]))
         gIoUloss = 1- self.MyGIoU(pred_loc, truth_loc).sum()/truth_loc.shape[0]
-       # myloss = locMSEloss+gIoUloss
-        myloss = gIoUloss
+        myloss = locMSEloss+gIoUloss
         return myloss
 
 
@@ -211,36 +225,64 @@ class Myloss(nn.Module):
 def train_PalmLocNet(train_loader, test_x, test_y):
     if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
         print('reload the last best model parameters')
-        if use_gpu:
-            palnet = PalmLocNet()
-            palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
-            palnet = palnet.cuda()
-        else:
-            palnet = PalmLocNet()
-            palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
+        palnet = PalmLocNet()
+        palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        if torch.cuda.device_count() > 1:
+            print('lets use', torch.cuda.device_count(), 'GPUs')
+            palnet = nn.DataParallel(palnet)
+        palnet.to(device)
+
+        # if use_gpu:
+        #     palnet = PalmLocNet()
+        #     palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        #    # palnet = palnet.cuda()
+        #     if torch.cuda.device_count()>1:
+        #         print('lets use', torch.cuda.device_count(), 'GPUs')
+        #         palnet = nn.DataParallel(palnet)
+        #     palnet = palnet.cuda()
+        # else:
+        #     palnet = PalmLocNet()
+        #     palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
     else:
         print('It is the first time to train the model!')
-        if use_gpu:
-            palnet = PalmLocNet()
-            palnet = palnet.cuda()
-        else:
-            palnet = PalmLocNet()
+        palnet = PalmLocNet()
+        if torch.cuda.device_count() > 1:
+            print('lets use', torch.cuda.device_count(), 'GPUs')
+            palnet = nn.DataParallel(palnet)
+        palnet.to(device)
+
+
+        # if use_gpu:
+        #     palnet = PalmLocNet()
+        #     if torch.cuda.device_count()>1:
+        #         print('lets use', torch.cuda.device_count(),'GPUs')
+        #         palnet = nn.DataParallel(palnet)
+        #     palnet = palnet.cuda()
+        #   #  palnet = palnet.cuda()
+        #   #  palnet = nn.DataParallel(palnet, device_ids=[0, 1, 2, 3])
+        # else:
+        #     palnet = PalmLocNet()
 
     optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
     loss_func = Myloss()
 
-   # compare_loss = [0]
-
     for epoch in range(args.EPOCH):
         for step, (x, y) in enumerate(train_loader):
-            if use_gpu:
-                b_x = x.cuda()
-                b_y = y.cuda()
-            else:
-                b_x = x
-                b_y = y
-
+            b_x = x.to(device)
+            b_y = y.to(device)/480
+            # if use_gpu:
+            #     b_x = x.cuda()
+            #     b_y = y.cuda()/480
+            # else:
+            #     b_x = x
+            #     b_y = y/480
+            print('b_x', b_x)
+            print('b_y', b_y)
+            print('b_x.shape', b_x.shape)
+            print('b_y.shape', b_y.shape)
             output = palnet(b_x)
+            print('output', output)
+          #  output = 480*output
             loss = loss_func(output, b_y)
             optimizer.zero_grad()  # 将上一步梯度值清零
             loss.backward()  # 求此刻各参数的梯度值
@@ -251,13 +293,16 @@ def train_PalmLocNet(train_loader, test_x, test_y):
                 w.add_graph(palnet,(b_x,))
                 w.add_scalar('Train', loss, global_step=(epoch+1)*100+step)
 
-            if step % 50 == 0:
+            if step % 100 == 0:
                 palnet.eval()
                 test_output = palnet(test_x)
+                print('test_output[0]',test_output[0])
+                print('test_y[0]', test_y[0])
+               # test_output = 480 * test_output
+               # print('480 * test_output',test_output)
                 test_loss_func = Myloss()
-                #test_GIoU = test_loss_func.MyGIoU(test_output,test_y).sum() /(test_y.shape[0])
-                test_GIoU = 1- test_loss_func(test_output,test_y)
-                test_locMSEloss = (test_output - test_y).pow(2).sum() /(4*test_y.shape[0])
+                test_GIoU = test_loss_func.MyGIoU(test_output,test_y).sum() /(test_y.shape[0])
+                test_locMSEloss = ((test_output - test_y).pow(2).sum() /(4*test_y.shape[0]))
                 test_loss = test_loss_func(test_output,test_y)
                 print('Epoch', epoch, '\n'
                       'train loss: %.4f' % loss.data.cpu().numpy(),'\n'
@@ -283,31 +328,36 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             print('best_loss in epoch 0:', best_loss)
            # print('compare_loss:', loss)
         else:
-           # compare_loss.append(loss)
            # print('compare_loss.append:', compare_loss)
             if loss < best_loss:
                 torch.save(palnet.state_dict(), args.MODELFOLDER + 'train_params_best.pth')
                 print('save the best trained model in epoch', epoch)
                 best_loss = loss
-                print('new best_loss:', best_loss)
+                print('new best_loss:',best_loss)
             else:
                 print('no better in this epoch', epoch)
 
 #只加载训练好的参数
 def test_PalmLocNet(test_x, test_y):
-    if use_gpu:
-        PLNet = PalmLocNet()
-        PLNet.eval()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
-        PLNet = PLNet.cuda()
-    else:
-        PLNet = PalmLocNet()
-        PLNet.eval()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
+    PLNet = PalmLocNet()
+    PLNet.eval()
+    PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    PLNet.to(device)
+
+    # if use_gpu:
+    #     PLNet = PalmLocNet()
+    #     PLNet.eval()
+    #     PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    #     PLNet = PLNet.cuda()
+    # else:
+    #     PLNet = PalmLocNet()
+    #     PLNet.eval()
+    #     PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
     test_output_Plnet = PLNet(test_x)
+  #  test_output_Plnet = 480*test_output_Plnet
     test_loss_func_Plnet = Myloss()
     test_GIoU_Plnet = test_loss_func_Plnet.MyGIoU(test_output_Plnet, test_y).sum()/test_y.shape[0]
-    test_locMSEloss_Plnet = (test_output_Plnet - test_y).pow(2).sum() / (4*test_y.shape[0])
+    test_locMSEloss_Plnet = ((test_output_Plnet - test_y).pow(2).sum() / (4*test_y.shape[0]))
     test_loss_Plnet = test_loss_func_Plnet(test_output_Plnet, test_y)
     print('test GIoU: %.4f' % test_GIoU_Plnet, '\n'
           'test locMSEloss: %.4f' % test_locMSEloss_Plnet,'\n'
@@ -316,6 +366,8 @@ def test_PalmLocNet(test_x, test_y):
 
 def testpic():
     oupt = test_PalmLocNet(test_x, test_y)
+    oupt = 480*oupt
+    print('oupt.shape:',oupt.shape)
     fh = open(args.PICTUREFOLDER + 'testset/' + 'test.txt', 'r')
     imgs = []
     for line in fh:
@@ -331,20 +383,22 @@ def testpic():
         # 预测框
         cv2.rectangle(img, (oupt[k][0], oupt[k][1]), (oupt[k][2], oupt[k][3]), (0, 255, 0), 4)
         cv2.rectangle(img, (int(p[1]), int(p[2])), (int(p[3]), int(p[4])), (0, 0, 255), 4)
+        cv2.imwrite(args.PICTUREFOLDER + 'testset/'+ 'testtruth/' + str(k) + '_test_truth.jpg', img)
         k += 1
-        cv2.imwrite(args.PICTUREFOLDER + 'testset/' + str(k) + '_test_truth.jpg', img)
-
-
 
 def testvideolocnet():
-    if use_gpu:
-        PLNet = PalmLocNet()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
-        PLNet = PLNet.cuda()
-    else:
-        PLNet = PalmLocNet()
-        PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
-    cap = cv2.VideoCapture(0)
+    PLNet = PalmLocNet()
+    PLNet.eval()
+    PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    PLNet.to(device)
+    # if use_gpu:
+    #     PLNet = PalmLocNet()
+    #     PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    #     PLNet = PLNet.cuda()
+    # else:
+    #     PLNet = PalmLocNet()
+    #     PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
+    cap = cv2.VideoCapture(1)
     while (cap.isOpened()):
         ret, frame = cap.read()
         if ret == True:
@@ -356,6 +410,7 @@ def testvideolocnet():
             tframe = tframe.unsqueeze(0)
             tframe = tframe.float()
             outloc = PLNet(tframe)
+            outloc = 480*outloc
             print(outloc)
             cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
             cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
