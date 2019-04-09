@@ -17,6 +17,7 @@ import cv2
 import torch.nn.functional as F
 
 ######pic_size = 480
+#######pic_resize =48
 
 #设置超参数
 parser = argparse.ArgumentParser(description='super params')
@@ -26,7 +27,7 @@ parser.add_argument('-b','--BATCH_SIZE', type=int, default=8, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
-parser.add_argument('-m','--MODELFOLDER',type= str, default='./model01/',
+parser.add_argument('-m','--MODELFOLDER',type= str, default='./modelvgg/',
                 help="folder to store model")
 # 有点小问题，要保证和实际的数据集的路径保持一致，不够智能
 parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./picture/',
@@ -82,7 +83,7 @@ class MyDataset(Dataset):
 if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists(args.PICTUREFOLDER+'testset/'+'test.txt') :
     print('train.txt and test.txt have been existed')
     transforms = transforms.Compose([
-       # transforms.Resize(224),
+        transforms.Resize(48),
         transforms.ToTensor(),
    #     transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)),
     ])
@@ -97,17 +98,6 @@ else:
 for k, (tx, ty) in enumerate(test_loader):
     test_x = tx.to(device)
     test_y = ty.to(device)/480
-    # if use_gpu:
-    #     test_x = tx.cuda()
-    #     test_y = ty.cuda()/480
-    # else:
-    #     test_x = tx
-    #     test_y = ty/480
-
-print('test_x', test_x)
-print('test_y', test_y)
-print('test_x.shape', test_x.shape)
-print('test_y.shape', test_y.shape)
 
 #神经网络建模
 cfg = {
@@ -122,11 +112,11 @@ class VGG(nn.Module):
         super(VGG, self).__init__()
         self.features = self._make_layers(cfg[vgg_name])
         self.outlinear = nn.Sequential(
-            nn.Linear(512 * 15 * 15, 4096),
+            nn.Linear(512 * 1 * 1, 128),
             torch.nn.Dropout(0.5),  # drop 50% of the neuron
             #   nn.BatchNorm1d(6400),
             nn.ReLU(),
-            nn.Linear(4096, 4),
+            nn.Linear(128, 4),
             # torch.nn.Dropout(0.5),  # drop 50% of the neuron
             # #    nn.BatchNorm1d(128),
             # nn.ReLU(),
@@ -225,43 +215,21 @@ class Myloss(nn.Module):
 def train_PalmLocNet(train_loader, test_x, test_y):
     if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
         print('reload the last best model parameters')
-        palnet = PalmLocNet()
-        palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        pal = PalmLocNet()
+     #   pal.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+        pal.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
         if torch.cuda.device_count() > 1:
             print('lets use', torch.cuda.device_count(), 'GPUs')
-            palnet = nn.DataParallel(palnet)
+            palnet = nn.DataParallel(pal)
         palnet.to(device)
 
-        # if use_gpu:
-        #     palnet = PalmLocNet()
-        #     palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
-        #    # palnet = palnet.cuda()
-        #     if torch.cuda.device_count()>1:
-        #         print('lets use', torch.cuda.device_count(), 'GPUs')
-        #         palnet = nn.DataParallel(palnet)
-        #     palnet = palnet.cuda()
-        # else:
-        #     palnet = PalmLocNet()
-        #     palnet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
     else:
         print('It is the first time to train the model!')
-        palnet = PalmLocNet()
+        pal = PalmLocNet()
         if torch.cuda.device_count() > 1:
             print('lets use', torch.cuda.device_count(), 'GPUs')
-            palnet = nn.DataParallel(palnet)
+            palnet = nn.DataParallel(pal)
         palnet.to(device)
-
-
-        # if use_gpu:
-        #     palnet = PalmLocNet()
-        #     if torch.cuda.device_count()>1:
-        #         print('lets use', torch.cuda.device_count(),'GPUs')
-        #         palnet = nn.DataParallel(palnet)
-        #     palnet = palnet.cuda()
-        #   #  palnet = palnet.cuda()
-        #   #  palnet = nn.DataParallel(palnet, device_ids=[0, 1, 2, 3])
-        # else:
-        #     palnet = PalmLocNet()
 
     optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
     loss_func = Myloss()
@@ -270,18 +238,13 @@ def train_PalmLocNet(train_loader, test_x, test_y):
         for step, (x, y) in enumerate(train_loader):
             b_x = x.to(device)
             b_y = y.to(device)/480
-            # if use_gpu:
-            #     b_x = x.cuda()
-            #     b_y = y.cuda()/480
-            # else:
-            #     b_x = x
-            #     b_y = y/480
-            print('b_x', b_x)
-            print('b_y', b_y)
-            print('b_x.shape', b_x.shape)
-            print('b_y.shape', b_y.shape)
+
+          #  print('b_x', b_x)
+          #  print('b_y', b_y)
+          #  print('b_x.shape', b_x.shape)
+          #  print('b_y.shape', b_y.shape)
             output = palnet(b_x)
-            print('output', output)
+          #  print('output', output)
           #  output = 480*output
             loss = loss_func(output, b_y)
             optimizer.zero_grad()  # 将上一步梯度值清零
@@ -289,9 +252,9 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             optimizer.step()  # 更新参数
 
             # 可视化模型结构
-            with SummaryWriter(log_dir='PLNet01') as w:
-                w.add_graph(palnet,(b_x,))
-                w.add_scalar('Train', loss, global_step=(epoch+1)*100+step)
+            # with SummaryWriter(log_dir='PLNet01') as w:
+            #     w.add_graph(palnet,(b_x,))
+            #     w.add_scalar('Train', loss, global_step=(epoch+1)*100+step)
 
             if step % 100 == 0:
                 palnet.eval()
@@ -341,7 +304,9 @@ def train_PalmLocNet(train_loader, test_x, test_y):
 def test_PalmLocNet(test_x, test_y):
     PLNet = PalmLocNet()
     PLNet.eval()
-    PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+ #   PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    PLNet.load_state_dict(
+        {k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
     PLNet.to(device)
 
     # if use_gpu:
@@ -389,7 +354,9 @@ def testpic():
 def testvideolocnet():
     PLNet = PalmLocNet()
     PLNet.eval()
-    PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+   # PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
+    PLNet.load_state_dict(
+        {k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
     PLNet.to(device)
     # if use_gpu:
     #     PLNet = PalmLocNet()
