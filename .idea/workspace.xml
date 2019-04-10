@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="24a960f9-ea2b-4099-8255-8014a55ba6d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_vggPalmLocNet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_vggPalmLocNet_origin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modelvggorg/train_params_best.pth" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,15 +13,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_origin.py">
+        <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_224.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="391" column="28" selection-start-line="391" selection-start-column="28" selection-end-line="391" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="483">
+              <caret line="95" column="89" selection-start-line="95" selection-start-column="89" selection-end-line="95" selection-end-column="89" />
             </state>
           </provider>
         </entry>
@@ -52,15 +50,15 @@
         <option value="$PROJECT_DIR$/main_vggPalmLocNet_improved.py" />
         <option value="$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB.py" />
         <option value="$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB (另一个复件).py" />
-        <option value="$PROJECT_DIR$/main_vggPalmLocNet_224.py" />
         <option value="$PROJECT_DIR$/main_vggPalmLocNet_origin.py" />
+        <option value="$PROJECT_DIR$/main_vggPalmLocNet_224.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-88" />
     <option name="y" value="24" />
-    <option name="width" value="1403" />
+    <option name="width" value="1301" />
     <option name="height" value="648" />
   </component>
   <component name="ProjectView">
@@ -238,9 +236,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1403" height="648" extended-state="0" />
+    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.033357505" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.02349256" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -253,7 +251,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.13622291" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.15769231" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.12732919" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -261,7 +259,6 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torch/utils/data/dataset.py" />
-    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torch/utils/data/dataloader.py" />
     <entry file="file://$PROJECT_DIR$/pathgenerate_org.py" />
     <entry file="file://$PROJECT_DIR$/video-picture.py" />
     <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-1247971764/cv2/cv2/__init__.py" />
@@ -344,20 +341,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="572">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB (另一个复件).py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="24" column="39" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB.py" />
+    <entry file="file://$PROJECT_DIR$/../image_deduplication/image_deduplier_ORB (另一个复件).py" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="263">
@@ -368,23 +353,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_224.py">
+    <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_origin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1628">
-          <caret line="116" column="30" selection-start-line="116" selection-start-column="30" selection-end-line="116" selection-end-column="30" />
+        <state relative-caret-position="8250">
+          <caret line="391" column="28" selection-start-line="391" selection-start-column="28" selection-end-line="391" selection-end-column="28" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_origin.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torch/utils/data/dataloader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="391" column="28" selection-start-line="391" selection-start-column="28" selection-end-line="391" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="200">
+          <caret line="768" column="30" selection-start-line="768" selection-start-column="17" selection-end-line="768" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_vggPalmLocNet_224.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="95" column="89" selection-start-line="95" selection-start-column="89" selection-end-line="95" selection-end-column="89" />
         </state>
       </provider>
     </entry>
