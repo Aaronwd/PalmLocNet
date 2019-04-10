@@ -93,7 +93,7 @@ if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists
     train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms)
     test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms)
     train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True, num_workers=8)
-    test_loader = DataLoader(dataset=test_data, batch_size=test_batch_size, num_workers=0)
+    test_loader = DataLoader(dataset=test_data, batch_size=test_batch_size, num_workers=8)
 else:
     print('you need to prepare your train.txt and test.txt first!')
 
@@ -218,11 +218,21 @@ def train_PalmLocNet(train_loader, test_x, test_y):
     if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
         print('reload the last best model parameters')
         pal = PalmLocNet()
+        if torch.cuda.is_available():
+            pal.load_state_dict(
+                {k.replace('module.', ''): v for k, v in
+                 torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
+        else:
+            pal.load_state_dict(
+                {k.replace('module.', ''): v for k, v in
+                 torch.load(args.MODELFOLDER + 'train_params_best.pth', map_location='cpu').items()})
      #   pal.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
-        pal.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
+     #   pal.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
         if torch.cuda.device_count() > 1:
             print('lets use', torch.cuda.device_count(), 'GPUs')
             palnet = nn.DataParallel(pal)
+        else:
+            palnet = pal
         palnet.to(device)
 
     else:
@@ -231,6 +241,8 @@ def train_PalmLocNet(train_loader, test_x, test_y):
         if torch.cuda.device_count() > 1:
             print('lets use', torch.cuda.device_count(), 'GPUs')
             palnet = nn.DataParallel(pal)
+        else:
+            palnet = pal
         palnet.to(device)
 
     optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
