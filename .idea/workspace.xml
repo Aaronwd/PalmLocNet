@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="24a960f9-ea2b-4099-8255-8014a55ba6d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_pretrain_vggPalmLocNet_224.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prevgg_param/train_params_best.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,10 +15,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py">
+        <entry file="file://$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="301" column="45" selection-start-line="301" selection-start-column="45" selection-end-line="301" selection-end-column="45" />
+            <state relative-caret-position="78">
+              <caret line="179" column="37" lean-forward="true" selection-start-line="179" selection-start-column="37" selection-end-line="179" selection-end-column="37" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -30,6 +31,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>nn</find>
+      <find>pretrained</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -67,14 +69,16 @@
         <option value="$PROJECT_DIR$/main_vggPalmLocNet_224.py" />
         <option value="$PROJECT_DIR$/main_pretrain_vggPalmLocNet_224.py" />
         <option value="$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" />
+        <option value="$PROJECT_DIR$/main_pretrain_vggPalmLocNet_class.py" />
+        <option value="$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="109" />
-    <option name="y" value="443" />
-    <option name="width" value="1352" />
-    <option name="height" value="684" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="65" />
+    <option name="y" value="41" />
+    <option name="width" value="1361" />
+    <option name="height" value="648" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -251,9 +255,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="130" y="300" width="1352" height="684" extended-state="0" />
+    <frame x="65" y="41" width="1361" height="648" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25828314" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.066566944" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -266,7 +270,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.13622291" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3705036" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.20384616" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -390,20 +394,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_224.py">
+    <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_224.py" />
+    <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" />
+    <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet_local.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="193" column="2" lean-forward="true" selection-start-line="193" selection-start-column="2" selection-end-line="193" selection-end-column="2" />
+        <state relative-caret-position="-2244">
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py">
+    <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="301" column="45" selection-start-line="301" selection-start-column="45" selection-end-line="301" selection-end-column="45" />
+        <state relative-caret-position="44">
+          <caret line="365" column="30" selection-start-line="365" selection-start-column="30" selection-end-line="365" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="179" column="37" lean-forward="true" selection-start-line="179" selection-start-column="37" selection-end-line="179" selection-end-column="37" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
