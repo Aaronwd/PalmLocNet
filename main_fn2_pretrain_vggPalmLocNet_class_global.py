@@ -27,7 +27,7 @@ parser.add_argument('-b','--BATCH_SIZE', type=int, default=8, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
-parser.add_argument('-m','--MODELFOLDER',type= str, default='./prevgg_param_local/',
+parser.add_argument('-m','--MODELFOLDER',type= str, default='./prevgg_param_class_fn2_g/',
                 help="folder to store model")
 # 有点小问题，要保证和实际的数据集的路径保持一致，不够智能
 parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./picture/',
@@ -110,11 +110,7 @@ class Myloss(nn.Module):
     def MyGIoU(self, pred_loc, truth_loc):
         pred_loc = pred_loc.to(device)
         truth_loc = truth_loc.to(device)
-        # if use_gpu:
-        #     pred_loc = pred_loc.cuda()
-        #     truth_loc = truth_loc.cuda()
-        # else:
-        #     pass
+
         x_p1 = pred_loc[:,0]
         y_p1 = pred_loc[:,1]
         x_p2 = pred_loc[:,2]
@@ -130,10 +126,7 @@ class Myloss(nn.Module):
         A_g = (x_g2 - x_g1) * (y_g2 - y_g1)
         #防止xp2小于xp1
         zer = torch.zeros(x_g1.shape).to(device)
-        # if use_gpu:
-        #     zer = torch.zeros(x_g1.shape).cuda()
-        # else:
-        #     zer = torch.zeros(x_g1.shape)
+
         A_p = (torch.max((x_p2 - x_p1), zer)) * (torch.max((y_p2 - y_p1), zer))
         #print(A_g, A_p)
 
@@ -166,23 +159,38 @@ class Myloss(nn.Module):
         myloss = locMSEloss+gIoUloss
         return myloss
 
+#定义神经网络（使用了pytorch已有的网络，部分参数训练时固定）
+class vggPalmLocNet(nn.Module):
+    def __init__(self, model):
+        super(vggPalmLocNet, self).__init__()
+        self.vggnet = nn.Sequential(*list(model.children())[:-1])
+     #   for p in self.parameters():
+     #       p.requires_grad = False
+        self.outlinear = nn.Sequential(
+            nn.Linear(512 * 7 * 7, 4096),
+            nn.ReLU(),
+            torch.nn.Dropout(0.5),  # drop 50% of the neuron
+           # nn.BatchNorm1d(128),
+            nn.Linear(4096, 4096),
+            nn.ReLU(),
+            torch.nn.Dropout(0.5),
+            nn.Linear(4096, 4)
+        )
+
+    def forward(self, x):
+        x =self.vggnet(x)
+        x = x.view(x.size(0), -1)
+        output = self.outlinear(x)
+        return output
+
 
 #训练以及保存模型数据
 def train_PalmLocNet(train_loader, test_x, test_y):
     if os.path.exists(args.MODELFOLDER + 'train_params_best.pth'):
         print('reload the last best model parameters')
-        #pal = PalmLocNet()
-        pal = models.vgg16_bn(pretrained=False)
-        print('old_model',pal)
-        for p in pal.parameters():
-            p.requires_grad = False
-        pal.classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 128),
-            torch.nn.Dropout(0.5),  # drop 50% of the neuron
-            nn.BatchNorm1d(128),
-            nn.ReLU(),
-            nn.Linear(128, 4)
-        )
+
+        vgg = models.vgg16_bn(pretrained=False)
+        pal = vggPalmLocNet(vgg)
 
         if torch.cuda.is_available():
             pal.load_state_dict(
@@ -192,6 +200,10 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             pal.load_state_dict(
                 {k.replace('module.', ''): v for k, v in
                  torch.load(args.MODELFOLDER + 'train_params_best.pth', map_location='cpu').items()})
+
+        print(vgg)
+        print(pal)
+
      #   pal.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth'))
      #   pal.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
   ###########################################
@@ -204,9 +216,9 @@ def train_PalmLocNet(train_loader, test_x, test_y):
         #     nn.BatchNorm1d(128),
         #     nn.ReLU(),
         #     nn.Linear(128, 4)
-        #)
+        # )
        # pal.classifier._modules['6'] = nn.Linear(4096, 4, bias=True)
-        print('new_model',pal)
+      #  print('new_model',pal)
       #####################################33
         ####################################
 
@@ -219,8 +231,20 @@ def train_PalmLocNet(train_loader, test_x, test_y):
 
     else:
         print('It is the first time to train the model!')
-        pal = models.vgg16_bn(pretrained=False)
-        print(pal)
+        vgg = models.vgg16_bn(pretrained=False)
+       # pal = vggPalmLocNet(vgg)
+
+        if torch.cuda.is_available():
+            vgg.load_state_dict(
+                {k.replace('module.', ''): v for k, v in
+                 torch.load(args.MODELFOLDER + 'vgg16_bn-6c64b313.pth').items()})
+        else:
+            vgg.load_state_dict(
+                {k.replace('module.', ''): v for k, v in
+                 torch.load(args.MODELFOLDER + 'vgg16_bn-6c64b313.pth', map_location='cpu').items()})
+
+        pal = vggPalmLocNet(vgg)
+
         if torch.cuda.device_count() > 1:
             print('lets use', torch.cuda.device_count(), 'GPUs')
             palnet = nn.DataParallel(pal)
@@ -228,8 +252,10 @@ def train_PalmLocNet(train_loader, test_x, test_y):
             palnet = pal
         palnet.to(device)
 
-   # optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,palnet.parameters()),lr= args.LR)
+    optimizer = torch.optim.Adam(palnet.parameters(),lr= args.LR)
+   # optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, palnet.parameters()), lr= args.LR)
+   # optimizer = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode='min', factor=1, patience=10, verbose=True, threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08)
+    #optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,palnet.parameters()),lr= args.LR)
     loss_func = Myloss()
 
     for epoch in range(args.EPOCH):
@@ -300,16 +326,8 @@ def train_PalmLocNet(train_loader, test_x, test_y):
 
 #只加载训练好的参数
 def test_PalmLocNet(test_x, test_y):
-    PLNet = models.vgg16_bn(pretrained=False)
-    for p in PLNet.parameters():
-        p.requires_grad = False
-    PLNet.classifier = nn.Sequential(
-        nn.Linear(512 * 7 * 7, 128),
-        torch.nn.Dropout(0.5),  # drop 50% of the neuron
-        nn.BatchNorm1d(128),
-        nn.ReLU(),
-        nn.Linear(128, 4)
-    )
+    vgg = models.vgg16_bn(pretrained=False)
+    PLNet = vggPalmLocNet(vgg)
     PLNet.eval()
     if torch.cuda.is_available():
         PLNet.load_state_dict(
@@ -355,16 +373,8 @@ def testpic(test_loader):
             k += 1
 
 def testvideolocnet():
-    PLNet = models.vgg16_bn(pretrained=False)
-    for p in PLNet.parameters():
-        p.requires_grad = False
-    PLNet.classifier = nn.Sequential(
-        nn.Linear(512 * 7 * 7, 128),
-        torch.nn.Dropout(0.5),  # drop 50% of the neuron
-        nn.BatchNorm1d(128),
-        nn.ReLU(),
-        nn.Linear(128, 4)
-    )
+    vgg = models.vgg16_bn(pretrained=False)
+    PLNet = vggPalmLocNet(vgg)
     PLNet.eval()
     if torch.cuda.is_available():
         PLNet.load_state_dict(
@@ -403,7 +413,7 @@ def testvideolocnet():
             cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
           #  frame = cv2.resize(frame, (640, 480))
             cv2.imshow('frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(100) & 0xFF == ord('q'):
                 break
         else:
                 break
