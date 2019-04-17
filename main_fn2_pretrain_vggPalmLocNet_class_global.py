@@ -3,10 +3,12 @@ import torch.nn as nn
 import argparse
 import torch.utils.data as data
 import os
+import numpy as np
 from tensorboardX import SummaryWriter
 
 #为处理数据引入的模块
 from torchvision import transforms, models
+import  torchvision
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 
@@ -93,7 +95,7 @@ if os.path.exists(args.PICTUREFOLDER+'trainset/'+'train.txt') and os.path.exists
     train_data = MyDataset(txt=args.PICTUREFOLDER + 'trainset/' + 'train.txt', transform=transforms)
     test_data = MyDataset(txt=args.PICTUREFOLDER + 'testset/' + 'test.txt', transform=transforms)
     train_loader = DataLoader(dataset=train_data, batch_size=args.BATCH_SIZE, shuffle=True, num_workers=8)
-    test_loader = DataLoader(dataset=test_data, batch_size=test_batch_size, num_workers=8)
+    test_loader = DataLoader(dataset=test_data, batch_size=test_batch_size, num_workers=2)
 else:
     print('you need to prepare your train.txt and test.txt first!')
 
@@ -353,6 +355,7 @@ def testpic(test_loader):
         test_y = ty.to(device) / 480
 
         oupt = test_PalmLocNet(test_x, test_y)
+       # print('testx',test_x)
         oupt = 480 * oupt
         fh = open(args.PICTUREFOLDER + 'testset/' + 'test.txt', 'r')
         imgs = []
@@ -398,28 +401,96 @@ def testvideolocnet():
         ret, frame = cap.read()
         if ret == True:
             print(frame.shape)
-            frame = cv2.resize(frame, (480, 480))
-            frame1 = cv2.resize(frame, (224, 224))
-             #用permute改变高维tensor的维数位置
-            tframe = torch.from_numpy(frame1).permute(2,0,1)
-             #加一维
+         #   frame = Image.open(frame).convert('RGB')
+            frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            frame1 = torchvision.transforms.Resize(224)(frame)
+            tframe = torchvision.transforms.ToTensor()(frame1)
             tframe = tframe.unsqueeze(0)
-            tframe = tframe.float()
+            # ####################
+            # frame = cv2.resize(frame, (480, 480))
+            # frame1 = cv2.resize(frame, (224, 224))
+            #  #用permute改变高维tensor的维数位置
+            # tframe = torch.from_numpy(frame1).permute(2,0,1)
+            #  #加一维
+            # tframe = tframe.unsqueeze(0)
+            # tframe = tframe.float().div(255)
             outloc = PLNet(tframe)
             print(outloc)
             outloc = 480*outloc
             print(outloc)
+            frame = cv2.cvtColor(np.asarray(frame), cv2.COLOR_RGB2BGR)
          #   cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
             cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
           #  frame = cv2.resize(frame, (640, 480))
             cv2.imshow('frame', frame)
-            if cv2.waitKey(100) & 0xFF == ord('q'):
+            if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
         else:
                 break
     cap.release()
     cv2.destroyAllWindows()
 
+
+
+#测试图片
+def test(testpath):
+
+    vgg = models.vgg16_bn(pretrained=False)
+    PLNet = vggPalmLocNet(vgg)
+    PLNet.eval()
+    if torch.cuda.is_available():
+        PLNet.load_state_dict(
+            {k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth').items()})
+    else:
+        PLNet.load_state_dict(
+            {k.replace('module.', ''): v for k, v in torch.load(args.MODELFOLDER + 'train_params_best.pth', map_location='cpu').items()})
+    PLNet.to(device)
+
+    os.chdir(testpath)
+    testfilenames = os.listdir()
+   # print(testfilenames)
+    for i in testfilenames:
+        # if cv2.waitKey() & 0xFF == ord('q'):
+        #     break
+        imgpath = testpath+i
+     #   print(imgpath)
+        frame = Image.open(imgpath).convert('RGB')
+     #   frame = open(imgpath)
+      #  frame = cv2.resize(frame, (480, 480))
+      #   frame1 = cv2.resize(frame, (224, 224))
+     #   print('frame1', frame1.shape)
+        # 用permute改变高维tensor的维数位置
+
+     #   print('tframe', tframe.shape)
+        #####################################
+        #####################################
+        #归一化的问题
+        # print(frame1.shape)
+        frame1 = torchvision.transforms.Resize(224)(frame)
+        tframe = torchvision.transforms.ToTensor()(frame1)
+
+        # tframe = tframe.permute(2, 0, 1)
+        # print('tframe', tframe.shape)
+        # 加一维
+        tframe = tframe.unsqueeze(0)
+
+       # tframe = tframe.float().div(255)
+        #####################################
+        #####################################
+      #  print('tf',tframe)
+
+        outloc = PLNet(tframe)
+     #   print(outloc)
+        outloc = 480 * outloc
+        #print(outloc)
+        #   cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
+       # frame = np.array(frame)
+        frame = cv2.cvtColor(np.asarray(frame), cv2.COLOR_RGB2BGR)
+        cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
+        #  frame = cv2.resize(frame, (640, 480))
+        cv2.imshow('frame', frame)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
 
 #运行训练以及测试模型
 if (__name__ == '__main__') and args.TrainOrNot:
@@ -430,6 +501,24 @@ if (__name__ == '__main__') and (not args.TrainOrNot):
         testvideolocnet()
     else:
         testpic(test_loader)
+        #test('/home/aaron/桌面/PalmLocNet/picture/testset/testtruth/pi/')
+        # x1, t1 =
+        # print('x',x[0,0,0,:])
+        # print('x1',x1[0,0,0,:])
+
+        # xx = x.mul(255).byte()
+        # xx = xx.cpu().numpy().squeeze(0).transpose((1,2,0))
+        # cv2.imshow('xx', xx)
+        # cv2.waitKey(5000)
+        # cv2.destroyAllWindows()
+
+        # xx1 = x1.mul(255).byte()
+        # xx1 = xx1.cpu().numpy().squeeze(0).transpose((1, 2, 0))
+        # cv2.imshow('xx1', xx1)
+        # cv2.waitKey(5000)
+        # cv2.destroyAllWindows()
+
+
 
 
 

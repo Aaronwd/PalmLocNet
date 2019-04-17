@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="24a960f9-ea2b-4099-8255-8014a55ba6d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prevgg_param/train_params_best.pth" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_pic.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_pic.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,16 +12,40 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="PalmLocNet" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_pic.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="179" column="37" lean-forward="true" selection-start-line="179" selection-start-column="37" selection-end-line="179" selection-end-column="37" />
+            <state relative-caret-position="1650">
+              <caret line="79" selection-start-line="79" selection-end-line="79" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="97" column="89" selection-start-line="97" selection-start-column="89" selection-end-line="97" selection-end-column="89" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torchvision/transforms/transforms.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1452">
+              <caret line="71" column="6" selection-start-line="71" selection-start-column="6" selection-end-line="71" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -71,37 +95,26 @@
         <option value="$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" />
         <option value="$PROJECT_DIR$/main_pretrain_vggPalmLocNet_class.py" />
         <option value="$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py" />
+        <option value="$PROJECT_DIR$/test_pic.py" />
+        <option value="$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
-    <option name="y" value="41" />
-    <option name="width" value="1361" />
+    <option name="x" value="368" />
+    <option name="y" value="24" />
+    <option name="width" value="1301" />
     <option name="height" value="648" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="PalmLocNet" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PalmLocNet" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pic" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunDashboard">
@@ -116,7 +129,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main_pretrain_vggPalmLocNet_224">
+  <component name="RunManager" selected="Python.main_fn2_pretrain_vggPalmLocNet_class_global">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -130,6 +143,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PalmLocNet_python/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_fn2_pretrain_vggPalmLocNet_class_global" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="PalmLocNet" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -159,27 +193,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="mydataset" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="PalmLocNet" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PalmLocNet_python/data" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PalmLocNet_python/data/mydataset.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="myloss" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -201,7 +214,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="vgg" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="test_pic" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PalmLocNet" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -209,11 +222,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PalmLocNet_python/models" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PalmLocNet_python/models/vgg.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_pic.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -224,11 +237,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main_fn2_pretrain_vggPalmLocNet_class_global" />
+        <item itemvalue="Python.test_pic" />
         <item itemvalue="Python.main_pretrain_vggPalmLocNet_224" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.myloss" />
-        <item itemvalue="Python.mydataset" />
-        <item itemvalue="Python.vgg" />
       </list>
     </recent_temporary>
   </component>
@@ -255,14 +268,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="41" width="1361" height="648" extended-state="0" />
+    <frame x="368" y="24" width="1301" height="648" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.066566944" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.07752545" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" weight="0.32889584" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.31294963" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.45576924" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.71266234" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -270,11 +283,30 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.13622291" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.20384616" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.29038462" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" weight="0.07752545" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.45576924" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.71266234" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.057692308" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32954547" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32954547" />
+      <window_info anchor="bottom" id="Python Console" order="9" weight="0.13622291" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.28653845" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torch/utils/data/dataset.py" />
@@ -396,29 +428,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_224.py" />
     <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet.py" />
-    <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet_local.py">
+    <entry file="file://$PROJECT_DIR$/test_pretrain_vggPalmLocNet_local.py" />
+    <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_class.py" />
+    <entry file="file://$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py" />
+    <entry file="file://$PROJECT_DIR$/test_pic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2244">
+        <state relative-caret-position="1650">
+          <caret line="79" selection-start-line="79" selection-end-line="79" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_pretrain_vggPalmLocNet_class.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/torchvision/transforms/transforms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="365" column="30" selection-start-line="365" selection-start-column="30" selection-end-line="365" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1452">
+          <caret line="71" column="6" selection-start-line="71" selection-start-column="6" selection-end-line="71" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_pretrain_resPalmLocNet_class.py">
+    <entry file="file://$PROJECT_DIR$/main_fn2_pretrain_vggPalmLocNet_class_global.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="179" column="37" lean-forward="true" selection-start-line="179" selection-start-column="37" selection-end-line="179" selection-end-column="37" />
+        <state relative-caret-position="220">
+          <caret line="97" column="89" selection-start-line="97" selection-start-column="89" selection-end-line="97" selection-end-column="89" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
