@@ -4,11 +4,11 @@ import argparse
 import torch.utils.data as data
 import os
 import numpy as np
-from tensorboardX import SummaryWriter
+#from tensorboardX import SummaryWriter
 
 #为处理数据引入的模块
 from torchvision import transforms, models
-import  torchvision
+import torchvision
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 
@@ -32,7 +32,7 @@ parser.add_argument('-l','--LR', type=float, default=0.001, metavar='LR',
 parser.add_argument('-m','--MODELFOLDER',type= str, default='./prevgg_param_class_fn2_g/',
                 help="folder to store model")
 # 有点小问题，要保证和实际的数据集的路径保持一致，不够智能
-parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./picture/',
+parser.add_argument('-p','--PICTUREFOLDER',type= str, default='./pic-new-palm/',
                 help="folder to store trained picture")
 
 def str2bool(v):
@@ -396,7 +396,7 @@ def testvideolocnet():
     # else:
     #     PLNet = PalmLocNet()
     #     PLNet.load_state_dict(torch.load(args.MODELFOLDER + 'train_params_best.pth',map_location='cpu'))
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     while (cap.isOpened()):
         ret, frame = cap.read()
         if ret == True:
@@ -406,6 +406,7 @@ def testvideolocnet():
             frame1 = torchvision.transforms.Resize(224)(frame)
             tframe = torchvision.transforms.ToTensor()(frame1)
             tframe = tframe.unsqueeze(0)
+            print('tframe', tframe.shape)
             # ####################
             # frame = cv2.resize(frame, (480, 480))
             # frame1 = cv2.resize(frame, (224, 224))
@@ -414,16 +415,16 @@ def testvideolocnet():
             #  #加一维
             # tframe = tframe.unsqueeze(0)
             # tframe = tframe.float().div(255)
-            outloc = PLNet(tframe)
-            print(outloc)
-            outloc = 480*outloc
-            print(outloc)
+            outloc = PLNet(tframe.to(device))
+            xx = 640
+            yy = 480
             frame = cv2.cvtColor(np.asarray(frame), cv2.COLOR_RGB2BGR)
          #   cv2.rectangle(frame, (1, 60), (100, 200), (0, 255, 0), 4)
-            cv2.rectangle(frame, (outloc[0][0], outloc[0][1]), (outloc[0][2], outloc[0][3]), (0, 255, 0), 4)
+            cv2.rectangle(frame, (xx * outloc[0][0], yy * outloc[0][1]), (xx * outloc[0][2], yy * outloc[0][3]),
+                          (0, 255, 0), 4)
           #  frame = cv2.resize(frame, (640, 480))
             cv2.imshow('frame', frame)
-            if cv2.waitKey(5) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         else:
                 break
@@ -479,7 +480,7 @@ def test(testpath):
         #####################################
       #  print('tf',tframe)
 
-        outloc = PLNet(tframe)
+        outloc = PLNet(tframe.to(device))
      #   print(outloc)
         outloc = 480 * outloc
         #print(outloc)
@@ -500,8 +501,8 @@ if (__name__ == '__main__') and (not args.TrainOrNot):
     if args.VideotestOrNot:
         testvideolocnet()
     else:
-        testpic(test_loader)
-        #test('/home/aaron/桌面/PalmLocNet/picture/testset/testtruth/pi/')
+       # testpic(test_loader)
+        test('/home/aaronwd/桌面/shenlan-Aaronwd/PalmLocNet/pic/')
         # x1, t1 =
         # print('x',x[0,0,0,:])
         # print('x1',x1[0,0,0,:])
