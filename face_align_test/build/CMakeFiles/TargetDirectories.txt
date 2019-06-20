@@ -1,0 +1,3 @@
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_align/face_align_test/build/CMakeFiles/edit_cache.dir
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_align/face_align_test/build/CMakeFiles/rebuild_cache.dir
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_align/face_align_test/build/CMakeFiles/test_face_align.dir
