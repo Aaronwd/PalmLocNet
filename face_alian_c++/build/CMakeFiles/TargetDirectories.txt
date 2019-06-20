@@ -1,0 +1,4 @@
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_alignment/face_alian_opt/build/CMakeFiles/rebuild_cache.dir
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_alignment/face_alian_opt/build/CMakeFiles/edit_cache.dir
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_alignment/face_alian_opt/build/CMakeFiles/face_align.dir
+/home/aaronwd/shenlan-wd/工程化/c化版本/face-reg-wangdong/face_alignment/face_alian_opt/build/CMakeFiles/face_align_library.dir

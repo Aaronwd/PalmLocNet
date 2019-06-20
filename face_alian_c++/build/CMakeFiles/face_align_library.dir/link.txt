@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC  -std=c++11 -O3 -DNDEBUG  -shared -Wl,-soname,libface_align_library.so -o libface_align_library.so CMakeFiles/face_align_library.dir/src/face_align.cpp.o 
